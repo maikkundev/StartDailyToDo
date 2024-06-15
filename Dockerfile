@@ -13,7 +13,6 @@ COPY models/*.go ./models/
 COPY data.db ./
 COPY main.go ./
 
-
 RUN CGO_ENABLED=1 GOOS=linux go build -o /docker-gs-ping
 
 CMD ["/docker-gs-ping"]
