@@ -23,7 +23,7 @@ func GetTodo(c *fiber.Ctx) error {
 		return c.SendStatus(404)
 	}
 
-	return c.Status(200).JSON(result)
+	return c.Status(200).JSON(todo)
 }
 
 func AddTodo(c *fiber.Ctx) error {
