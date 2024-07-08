@@ -1,31 +1,28 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"log"
+	"net/http"
+
 	"github.com/maikkundev/start-daily-todo/database"
 	"github.com/maikkundev/start-daily-todo/handlers"
+	"github.com/rs/cors"
 )
 
 func main() {
-	var app = fiber.New()
-	app.Use(cors.New())
-
-	var err = database.Connect()
-	if err != nil {
-		return
+	// Connect to the database
+	if err := database.Connect(); err != nil {
+		log.Fatal(err)
 	}
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Welcome to StartDailyToDo")
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Welcome to StartDailyToDo"))
 	})
 
-	app.Get("/todos", handlers.GetTodos)
-	app.Get("todos/:id", handlers.GetTodo)
-	app.Post("/todos", handlers.AddTodo)
-	app.Put("/todos/:id", handlers.UpdateTodo)
-	app.Delete("todos/:id", handlers.DeleteTodo)
+	mux.HandleFunc("/todos", handlers.TodosHandler)
+	mux.HandleFunc("/todos/", handlers.TodoHandler)
 
-	log.Fatal(app.Listen(":3000"))
+	handler := cors.Default().Handler(mux)
+	log.Fatal(http.ListenAndServe(":3000", handler))
 }
