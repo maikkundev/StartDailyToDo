@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { MantineProvider } from "@mantine/core";
+import { Navbar } from "./navbar";
 
 interface Todo {
   ID: number;
@@ -28,24 +30,29 @@ export default function Home() {
   console.log(todos);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Welcome to StartDailyTodo</h1>
-      <div>
-        <>
-          {todos ? (
-            todos.map((todo, id) => {
-              return (
-                <ol key={id}>
-                  <li>{todo.name}</li>
-                  <li>{todo.isDone}</li>
-                </ol>
-              );
-            })
-          ) : (
-            <p>Loading...</p>
-          )}
-        </>
-      </div>
-    </main>
+    <MantineProvider>
+      <main>
+        <Navbar></Navbar>
+        <h1>Welcome to StartDailyTodo</h1>
+        <div>
+          <>
+            {todos ? (
+              todos.map((todo, id) => {
+                return (
+                  <ol key={id}>
+                    <li>
+                      {todo.name} <button>x</button>
+                    </li>
+                    <li>{todo.isDone}</li>
+                  </ol>
+                );
+              })
+            ) : (
+              <p>Loading...</p>
+            )}
+          </>
+        </div>
+      </main>
+    </MantineProvider>
   );
 }
