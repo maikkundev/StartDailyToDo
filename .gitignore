@@ -22,3 +22,6 @@
 go.work
 
 tmp/
+
+.vscode/
+.idea/
