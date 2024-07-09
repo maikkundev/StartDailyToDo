@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -10,7 +11,6 @@ import (
 )
 
 func main() {
-	// Connect to the database
 	if err := database.Connect(); err != nil {
 		log.Fatal(err)
 	}
@@ -24,5 +24,6 @@ func main() {
 	mux.HandleFunc("/todos/", handlers.TodoHandler)
 
 	handler := cors.Default().Handler(mux)
+	fmt.Printf("listening on port :3000")
 	log.Fatal(http.ListenAndServe(":3000", handler))
 }
