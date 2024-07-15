@@ -35,7 +35,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const tabs = [
-  { icon: IconHome, label: "home" },
+  { icon: IconHome, label: "Home" },
   { icon: IconSettings, label: "Settings" },
 ];
 
