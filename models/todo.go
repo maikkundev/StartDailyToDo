@@ -6,6 +6,6 @@ import (
 
 type Todo struct {
 	gorm.Model
-	Name   string `json:"name"`
-	IsDone bool   `json:"isDone" gorm:"default:true"`
+	Name   string `json:"Name"`
+	IsDone bool   `json:"IsDone"`
 }
