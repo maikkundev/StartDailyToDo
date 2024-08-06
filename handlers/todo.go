@@ -76,7 +76,9 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request, id string) {
 		return
 	}
 
-	database.Database.Model(&todo).Where("id = ?", id).Updates(&todo)
+	database.Database.Model(&todo).Where("id = ?", id).Updates(map[string]interface{}{
+		"IsDone": todo.IsDone,
+	})
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todo)
 }
