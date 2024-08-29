@@ -1,39 +1,26 @@
-package handlers
+package server
 
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
-	"github.com/maikkundev/start-daily-todo/database"
-	"github.com/maikkundev/start-daily-todo/models"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/maikkundev/start-daily-todo/internal/database"
+	"github.com/maikkundev/start-daily-todo/internal/models"
 )
 
-// /todos
-func TodosHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		GetTodos(w, r)
-	case http.MethodPost:
-		AddTodo(w, r)
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
+func (s server) RegisterRoutes() http.Handler {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 
-// /todo
-func TodoHandler(w http.ResponseWriter, r *http.Request) {
-	id := strings.TrimPrefix(r.URL.Path, "/todos/")
-	switch r.Method {
-	case http.MethodGet:
-		GetTodo(w, r, id)
-	case http.MethodPut:
-		UpdateTodo(w, r, id)
-	case http.MethodDelete:
-		DeleteTodo(w, r, id)
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
+	r.Get("/todos", GetTodos)
+	r.Get("/todo/{id}", GetTodo)
+	r.Post("/todo", AddTodo)
+	r.Patch("/todo/{id}", UpdateTodo)
+	r.Delete("/todo/{id}", DeleteTodo)
+
+	return r
 }
 
 func GetTodos(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +30,8 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(todos)
 }
 
-func GetTodo(w http.ResponseWriter, r *http.Request, id string) {
+func GetTodo(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
 	var todo models.Todo
 	result := database.Database.First(&todo, id)
 
@@ -69,7 +57,8 @@ func AddTodo(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(todo)
 }
 
-func UpdateTodo(w http.ResponseWriter, r *http.Request, id string) {
+func UpdateTodo(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
 	var todo models.Todo
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -83,7 +72,9 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request, id string) {
 	json.NewEncoder(w).Encode(todo)
 }
 
-func DeleteTodo(w http.ResponseWriter, r *http.Request, id string) {
+func DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
 	var todo models.Todo
 	result := database.Database.Delete(&todo, id)
 

@@ -1,0 +1,14 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  watch:
+    cmds:
+      - air
+  run:
+    cmds:
+      - go run cmd/main.go
+  build:
+    cmds:
+      - go build -o startdaily cmd/main.go

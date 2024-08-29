@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/maikkundev/start-daily-todo/models"
+	"github.com/maikkundev/start-daily-todo/internal/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
